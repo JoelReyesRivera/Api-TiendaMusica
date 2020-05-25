@@ -1,0 +1,27 @@
+{
+  "name": "api-tiendamusica",
+  "version": "1.0.0",
+  "description": "Api para el manejo de los datos de una tienda musical. Desarrollo: Node js BD: SQLite",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoelReyesRivera/Api-TiendaMusica.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JoelReyesRivera/Api-TiendaMusica/issues"
+  },
+  "homepage": "https://github.com/JoelReyesRivera/Api-TiendaMusica#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "sequelize": "^5.21.10",
+    "sqlite3": "^4.2.0"
+  }
+}
