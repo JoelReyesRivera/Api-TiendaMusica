@@ -16,11 +16,27 @@ const playlist = require("./routes/playlist")(models);
 app.use("/api/Playlist",playlist);
 const artist = require("./routes/artist")(models);
 app.use("/api/Artist",artist);
+const employees = require("./routes/employees")(models);
+app.use("/api/Employees",employees);
+const albums = require("./routes/albums")(models);
+app.use("/api/Albums",albums);
+const customers = require("./routes/customers")(models);
+app.use("/api/Customers",customers);
+const invoices = require("./routes/invoices")(models);
+app.use("/api/Invoices",invoices);
+const tracks = require("./routes/tracks")(models);
+app.use("/api/Tracks",tracks);
+const playlist_track = require("./routes/playlist_track")(models);
+app.use("/api/PlaylistTrack",playlist_track);
+const invoices_items = require("./routes/invoices_item")(models);
+app.use("/api/InvoicesItems",invoices_items);
+
+
+app.use(morgan('dev'))
 
 
 var port = process.env.PORT || 3000
 
-app.use(morgan('dev'))
 
 app.listen(port, err => {
   if (err) {

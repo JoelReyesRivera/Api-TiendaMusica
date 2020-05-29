@@ -4,7 +4,11 @@ module.exports = (models) => {
 
     router.get("/", async (req, res)=> {
         const artist = await models.artist.findAll({})
-        res.send(artist)
+            return res.status(200).json({
+                flag: true,
+                data: artist,
+                message: "OBTENIDO CORRECTAMENTE",
+        })
     });
 
     router.post("/", async (req, res)=> {
@@ -19,7 +23,7 @@ module.exports = (models) => {
             }
             const newArtist = await models.artist.create(artistBody)
             if (newArtist) {
-                return res.status(400).json({
+                return res.status(200).json({
                     flag: true,
                     data: newArtist,
                     message: "AGREGADO CORRECTAMENTE",
@@ -36,10 +40,9 @@ module.exports = (models) => {
             return res.status(400).json({
                 flag: false,
                 data: null,
-                message: "NO ES POSIBLE AGREGAR EXCEPCIÓN"
+                message: "ERROR AL AGREGAR"
         })
         }
     });
-
     return router;
 }

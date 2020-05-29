@@ -3,29 +3,38 @@ const router = require("express").Router();
 module.exports = (models) => {
 
     router.get("/", async (req, res)=> {
-        const playlist = await models.playlist.findAll({})
+        const albums = await models.albums.findAll({})
         return res.status(200).json({
             flag: true,
-            data: playlist,
-            message: "OBTENIDO CORRECTAMENTE",
+            data: albums
     })
     });
 
     router.post("/", async (req, res)=> {
         try {
-            playlist = req.body.Name
-            if (!playlist) {
+            body = req.body
+            if (!body.Title) {
                 return res.status(400).json({
                     flag: false,
                     data: null,
-                    message: "NOMBRE INVÁLIDO",
+                    message: "TITULO INVÁLIDO",
             })
+            }   
+            if (body.ArtistId) {
+                const artist = await models.artist.findByPk(body.ArtistId)
+                if (!artist) {
+                    return res.status(400).json({
+                        flag: false,
+                        data: null,
+                        message: "ARTISTA EXISTENTE",
+                })
+                }
             }
-            const Newplaylist = await models.playlist.create(playlist)
-            if (Newplaylist) {
+            const newAlbum = await models.albums.create(body)
+            if (newAlbum) {
                 return res.status(200).json({
                     flag: true,
-                    data: Newplaylist,
+                    data: newAlbum,
                     message: "AGREGADO CORRECTAMENTE",
             })
             }
@@ -45,23 +54,24 @@ module.exports = (models) => {
         }
     });
 
-    router.get("/:id", async (req, res)=> {
+    
+    router.get("/:Artistid", async (req, res)=> {
         try {
-            const { params: { id }, body } = req
-            models.tracks.findByPk(id)
-            .then(tracks => {
-                if (!tracks) {
+            const { params: { Artistid }, body } = req
+            models.artist.findByPk(Artistid)
+            .then(artist => {
+                if (!artist) {
                     return res.status(400).json({
                         flag: false,
                         data: null,
-                        message: "PLAYLIST INEXISTENTE"
+                        message: "ARTISTA INEXISTENTE"
                 })
                 }
-                tracks.getPlaylist_track()
-                    .then(Playlist_track => {
+                artist.getAlbums()
+                    .then(albums => {
                         return res.status(200).json({
                             flag: true,
-                            data: Playlist_track,
+                            data: albums,
                             message: "OBTENIDO CORRECTAMENTE"
                     })
                     })
@@ -70,9 +80,10 @@ module.exports = (models) => {
             return res.status(400).json({
                 flag: false,
                 data: null,
-                message: "NO ES POSIBLE AGREGAR EXCEPCIÓN"
+                message: "NO ES POSIBLE OBTENER"
         })
         }
     });
+
     return router;
 }

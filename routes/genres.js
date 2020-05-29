@@ -4,20 +4,23 @@ module.exports = (models) => {
 
     router.get("/", async (req, res)=> {
         const genres = await models.genres.findAll({})
-        res.send(genres)
+        return res.status(200).json({
+            flag: true,
+            data: genres,
+            message: "OBTENIDO CORRECTAMENTE",
+    })
     });
 
     router.post("/", async (req, res)=> {
         try {
-            genre = req.body.Name
-            if (!genre) {
+            if (!req.body.Name) {
                 return res.status(400).json({
                     flag: false,
                     data: null,
                     message: "NOMBRE INVÁLIDO",
             })
             }
-            const genres = await models.genres.create(genre)
+            const genres = await models.genres.create(req.body)
             if (genres) {
                 return res.status(400).json({
                     flag: true,
@@ -36,7 +39,7 @@ module.exports = (models) => {
             return res.status(400).json({
                 flag: false,
                 data: null,
-                message: "NO ES POSIBLE AGREGAR EXCEPCIÓN"
+                message: "ERROR AL AGREGAR"
         })
         }
     });

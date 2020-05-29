@@ -33,11 +33,11 @@ media_types.hasMany(tracks,{foreignKey:'MediaTypeId', as:"Tracks"})
 employees.hasMany(employees,{foreignKey:'ReportsTo', as:"Employees"})
 employees.hasMany(customers,{foreignKey:'SupportRepId', as:"Customers"})
 customers.hasMany(invoices,{foreignKey:'CustomerId', as:"Invoices"})
-invoices.hasMany(invoices_items,{foreignKey:'InvoicedId', as:"Invoices_items"})
+invoices.hasMany(invoices_items,{foreignKey:'InvoiceId', as:"Invoices_items"})
 tracks.hasMany(invoices_items,{foreignKey:'TrackId', as:"Invoices_items"})
-playlist.belongsToMany(tracks,{foreignKey:'TrackId', as:"Playlist_track",through: playlist_track })
-tracks.belongsToMany(playlist,{foreignKey:'PlaylistId', as:"Playlist_track",through: playlist_track})
-sequelize.sync({force:true});
+playlist.belongsToMany(tracks,{foreignKey:'PlayListId', as:"Playlist_track",through: playlist_track })
+tracks.belongsToMany(playlist,{foreignKey:'TrackId', as:"Playlist_track",through: playlist_track})
+sequelize.sync({forced:false});
 
 module.exports = {
     media_types,genres,artist,playlist,albums,tracks,employees,customers,invoices,invoices_items,playlist_track

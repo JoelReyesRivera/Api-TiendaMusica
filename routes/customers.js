@@ -3,29 +3,38 @@ const router = require("express").Router();
 module.exports = (models) => {
 
     router.get("/", async (req, res)=> {
-        const playlist = await models.playlist.findAll({})
+        const customers = await models.customers.findAll({})
         return res.status(200).json({
             flag: true,
-            data: playlist,
-            message: "OBTENIDO CORRECTAMENTE",
+            data: customers
     })
     });
 
     router.post("/", async (req, res)=> {
         try {
-            playlist = req.body.Name
-            if (!playlist) {
+            body = req.body
+            if (!body.FirstName || !body.LastName || !body.Company ||!body.Email || !body.Phone) {
                 return res.status(400).json({
                     flag: false,
                     data: null,
-                    message: "NOMBRE INVÁLIDO",
+                    message: "INFORMACIÓN INVÁLIDA",
             })
             }
-            const Newplaylist = await models.playlist.create(playlist)
-            if (Newplaylist) {
+            if (body.SupportRepId) {
+                const SupportRep = await models.employees.findByPk(body.SupportRepId)
+                if (!SupportRep) {
+                    return res.status(400).json({
+                        flag: false,
+                        data: null,
+                        message: "EMPLEADO NO EXISTENTE",
+                })
+                }
+            }
+            const newCustomer = await models.customers.create(body)
+            if (newCustomer) {
                 return res.status(200).json({
                     flag: true,
-                    data: Newplaylist,
+                    data: newCustomer,
                     message: "AGREGADO CORRECTAMENTE",
             })
             }
@@ -33,14 +42,14 @@ module.exports = (models) => {
                 return res.status(400).json({
                     flag: false,
                     data: null,
-                    message: "NO ES POSIBLE AGREGAR",
+                    message: "ERROR AL AGREGAR"
             })
             }
         } catch (error) {
             return res.status(400).json({
                 flag: false,
                 data: null,
-                message: "ERROR AL AGREGAR"
+                message: "NO ES POSIBLE AGREGAR EXCEPCIÓN"
         })
         }
     });
@@ -48,20 +57,20 @@ module.exports = (models) => {
     router.get("/:id", async (req, res)=> {
         try {
             const { params: { id }, body } = req
-            models.tracks.findByPk(id)
-            .then(tracks => {
-                if (!tracks) {
+            models.employees.findByPk(id)
+            .then(employee => {
+                if (!employee) {
                     return res.status(400).json({
                         flag: false,
                         data: null,
-                        message: "PLAYLIST INEXISTENTE"
+                        message: "EMPLEADO INEXISTENTE"
                 })
                 }
-                tracks.getPlaylist_track()
-                    .then(Playlist_track => {
+                employee.getCustomers()
+                    .then(employess => {
                         return res.status(200).json({
                             flag: true,
-                            data: Playlist_track,
+                            data: employess,
                             message: "OBTENIDO CORRECTAMENTE"
                     })
                     })
