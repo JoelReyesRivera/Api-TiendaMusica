@@ -2,14 +2,6 @@ const router = require("express").Router();
 
 module.exports = (models) => {
 
-    router.get("/", async (req, res)=> {
-        const playlist_track = await models.playlist_track.findAll({})
-        return res.status(200).json({
-            flag: true,
-            data: playlist_track,
-            message: "OBTENIDO CORRECTAMENTE",
-    })    });
-
     router.post("/", async (req, res)=> {
         try {
             if(!req.body.PlaylistId || !req.body.TrackId){
@@ -36,7 +28,7 @@ module.exports = (models) => {
             })
             }
             body = req.body
-            const playlist_track = await models.playlist_track.create(body)
+            const playlist_track = await track.addPlaylist(playlist)
             if (playlist_track) {
                 return res.status(200).json({
                     flag: true,
@@ -55,8 +47,7 @@ module.exports = (models) => {
             return res.status(400).json({
                 flag: false,
                 data: null,
-                message: "ERROR AL AGREGAR",
-                error : error
+                message: "ERROR AL AGREGAR"
         })
         }
     });

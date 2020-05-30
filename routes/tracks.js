@@ -79,29 +79,24 @@ module.exports = (models) => {
     router.get("/:Artistid", async (req, res)=> {
         try {
             const { params: { Artistid } } = req
-            var dataTracks = Array()
-            models.artist.findByPk(Artistid)
-            .then(artist => {
-                if (!artist) {
-                    return res.status(400).json({
-                        flag: false,
-                        data: null,
-                        message: "ARTISTA INEXISTENTE"
-                })
-                }
-                artist.getAlbums()
-                    .then(albums => {
-                        albums.forEach(element => {
-                            element.getTracks()
-                            .then(tracks => {
-                                tracks.forEach(elemento => {
-                                    console.log(elemento.dataValues)
-                                });
-                            })
-                        });
-                    })
-                })
-                res.send(dataTracks)
+            const artista = await models.artist.findByPk(Artistid)
+            if (!artista) {
+                return res.status(400).json({
+                    flag: false,
+                    data: null,
+                    message: "ARTISTA INEXISTENTE"
+            })
+            }
+            albums = await artista.getAlbums()
+            arrayTracks = Array()
+            for (let index = 0; index < albums.length; index++) {
+                const tracks = await albums[index].getTracks()
+                console.log(albums[index].dataValues)
+                for (let index = 0; index < tracks.length; index++) {
+                    arrayTracks.push(tracks[index].dataValues)                    
+                }                
+            }
+            res.send(arrayTracks)
         } catch (error) {
             return res.status(400).json({
                 flag: false,

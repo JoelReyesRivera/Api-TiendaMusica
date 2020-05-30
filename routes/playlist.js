@@ -13,15 +13,14 @@ module.exports = (models) => {
 
     router.post("/", async (req, res)=> {
         try {
-            playlist = req.body.Name
-            if (!playlist) {
+            if (!req.body.Name) {
                 return res.status(400).json({
                     flag: false,
                     data: null,
                     message: "NOMBRE INVÁLIDO",
             })
             }
-            const Newplaylist = await models.playlist.create(playlist)
+            const Newplaylist = await models.playlist.create(req.body)
             if (Newplaylist) {
                 return res.status(200).json({
                     flag: true,
@@ -45,10 +44,10 @@ module.exports = (models) => {
         }
     });
 
-    router.get("/:id", async (req, res)=> {
+    router.get("/track/:id", async (req, res)=> {
         try {
             const { params: { id }, body } = req
-            models.tracks.findByPk(id)
+            await models.tracks.findByPk(id)
             .then(tracks => {
                 if (!tracks) {
                     return res.status(400).json({
@@ -57,7 +56,7 @@ module.exports = (models) => {
                         message: "PLAYLIST INEXISTENTE"
                 })
                 }
-                tracks.getPlaylist_track()
+                tracks.getPlaylists()
                     .then(Playlist_track => {
                         return res.status(200).json({
                             flag: true,

@@ -49,7 +49,8 @@ module.exports = (models) => {
             return res.status(400).json({
                 flag: false,
                 data: null,
-                message: "NO ES POSIBLE AGREGAR EXCEPCIÓN"
+                message: "NO ES POSIBLE AGREGAR",
+                error : error
         })
         }
     });

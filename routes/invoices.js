@@ -22,6 +22,7 @@ module.exports = (models) => {
             }   
             if (body.CustomerId) {
                 const customer = await models.employees.findByPk(body.CustomerId)
+                console.log(customer)
                 if (!customer) {
                     return res.status(200).json({
                         flag: false,
@@ -71,6 +72,37 @@ module.exports = (models) => {
                         return res.status(200).json({
                             flag: true,
                             data: invoices,
+                            message: "OBTENIDO CORRECTAMENTE"
+                    })
+                    })
+                })
+        } catch (error) {
+            return res.status(400).json({
+                flag: false,    
+                data: null,
+                message: "NO ES POSIBLE OBTENER EXCEPCIÓN"
+        })
+        }
+    });
+
+    router.get("/items/:id", async (req, res)=> {
+        try {
+            const { params: { id }, body } = req
+            models.invoices.findByPk(id)
+            .then(invoice => {
+                if (!invoice) {
+                    return res.status(400).json({
+                        flag: false,
+                        data: null,
+                        message: "FACTURA INEXISTENTE"
+                })
+                }
+                console.log(invoice)
+                invoice.getInvoices_items()
+                    .then(items => {
+                        return res.status(200).json({
+                            flag: true,
+                            data: items,
                             message: "OBTENIDO CORRECTAMENTE"
                     })
                     })
